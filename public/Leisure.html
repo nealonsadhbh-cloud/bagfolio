@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>Leisure</title>
+
+  <style>
+    .project-nav{
+    position:fixed;
+    top:30px;
+    left:30px;
+    z-index:1000;
+
+    display:flex;
+    align-items:center;
+    gap:4px;
+
+    height:55px;      /* ADD THIS */
+    padding:8px;
+
+    background:rgba(0,0,0,.14);
+
+    border-radius:999px;
+    overflow:hidden;
+
+    backdrop-filter:blur(10px);
+}
+
+.project-nav a{
+    position:relative;
+    z-index:2;
+
+    text-decoration:none;
+    color:#111;
+
+    font-size:.8rem;
+    line-height:1;    /* ADD THIS */
+
+    padding:12px 18px;
+
+    border-radius:999px;
+
+    transition:color .3s ease;
+}
+
+
+.project-nav a:hover{
+    color:#000;
+}
+
+.project-nav a.active{
+    background:none;
+}
+
+.nav-bubble{
+    position:absolute;
+    top:4px;
+    left:0;
+    z-index:1;
+
+    height:calc(100% - 8px);
+
+    background:rgba(255,255,255,.45);
+
+    backdrop-filter:
+        blur(24px)
+        saturate(180%);
+
+    -webkit-backdrop-filter:
+        blur(24px)
+        saturate(180%);
+
+    border-radius:999px;
+
+    border:1px solid rgba(255,255,255,.65);
+
+    box-shadow:
+        0 2px 6px rgba(0,0,0,.08),
+        0 10px 20px rgba(255,255,255,.15),
+        inset 0 1px 1px rgba(255,255,255,.95);
+
+    transition:
+        left .55s cubic-bezier(.34,1.56,.64,1),
+        width .55s cubic-bezier(.34,1.56,.64,1),
+        transform .25s ease,
+        opacity .3s ease,
+        filter .3s ease;
+}
+
+.nav-bubble::before{
+    content:"";
+
+    position:absolute;
+
+    top:2px;
+    left:8px;
+
+    width:70%;
+    height:45%;
+
+    border-radius:999px;
+
+    background:
+    linear-gradient(
+        to bottom,
+        rgba(255,255,255,.75),
+        rgba(255,255,255,0)
+    );
+
+    pointer-events:none;
+}
+
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+    }
+
+    body{
+      background:#f3f0ea;
+      color:#222;
+      font-family:Arial,sans-serif;
+      overflow-x:hidden;
+    }
+
+    
+    .hero{
+      min-height:40vh;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      padding:80px 40px;
+    }
+
+    .hero-logo{
+      width:220px;
+      display:block;
+      transform-origin:top center;
+      animation:swingLogo 1.8s ease-out;
+    }
+
+    @keyframes swingLogo{
+
+      0%{
+        opacity:0;
+        transform:
+          scale(1.8)
+          rotate(-10deg);
+      }
+
+      25%{
+        transform:
+          scale(1)
+          rotate(8deg);
+      }
+
+      50%{
+        transform:rotate(-5deg);
+      }
+
+      75%{
+        transform:rotate(2deg);
+      }
+
+      100%{
+        opacity:1;
+        transform:
+          scale(1)
+          rotate(0deg);
+      }
+
+    }
+
+    .page-content{
+      opacity:0;
+      animation:revealContent 1s ease forwards;
+      animation-delay:0.8s;
+    }
+
+    @keyframes revealContent{
+
+      from{
+        opacity:0;
+        transform:translateY(40px);
+      }
+
+      to{
+        opacity:1;
+        transform:translateY(0);
+      }
+
+    }
+
+    .project-info{
+      max-width:1200px;
+      margin:auto;
+      padding:0 8vw 70px;
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:50px;
+    }
+
+    .project-info h3{
+      font-size:0.8rem;
+      text-transform:uppercase;
+      letter-spacing:0.15em;
+      opacity:0.5;
+      margin-bottom:12px;
+    }
+
+    .project-info p{
+      line-height:1.7;
+      font-size:1rem;
+    }
+
+    .gallery-section{
+      max-width:1200px;
+      margin:auto;
+      padding:0 8vw 120px;
+    }
+
+    .gallery{
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:30px;
+    }
+
+    .gallery img{
+      width:100%;
+      display:block;
+      border-radius:10px;
+      aspect-ratio:16/9;
+      object-fit:cover;
+    }
+
+    .section{
+      max-width:1200px;
+      margin:auto;
+      padding:0 8vw 120px;
+    }
+
+    .section h2{
+      font-size:2rem;
+      font-weight:400;
+      margin-bottom:25px;
+    }
+
+    .section p{
+      max-width:750px;
+      line-height:1.9;
+      opacity:0.85;
+    }
+
+    .footer{
+      padding:120px 40px;
+      text-align:center;
+      opacity:0.4;
+      font-size:0.9rem;
+    }
+
+    @media (max-width:900px){
+
+      .project-info{
+        grid-template-columns:1fr;
+      }
+
+      .gallery{
+        grid-template-columns:1fr;
+      }
+
+      .hero-logo{
+        width:160px;
+      }
+
+    }
+
+  </style>
+
+</head>
+<script>
+
+function moveBubble(){
+
+    const active =
+    document.querySelector(".project-nav a.active");
+
+    const bubble =
+    document.querySelector(".nav-bubble");
+
+    if(!active || !bubble) return;
+
+    bubble.style.width =
+    (active.offsetWidth + 24) + "px";
+
+    bubble.style.left =
+    (active.offsetLeft - 12) + "px";
+}
+
+window.addEventListener("load", () => {
+
+    const bubble =
+    document.querySelector(".nav-bubble");
+
+    bubble.style.transition = "none";
+
+    moveBubble();
+
+    requestAnimationFrame(() => {
+
+        bubble.style.transition =
+        `left .55s cubic-bezier(.34,1.56,.64,1),
+         width .55s cubic-bezier(.34,1.56,.64,1),
+         transform .25s ease,
+         opacity .3s ease,
+         filter .3s ease`;
+
+    });
+
+    document
+    .querySelectorAll(".project-nav a")
+    .forEach(link => {
+
+        link.addEventListener("click", e => {
+
+            e.preventDefault();
+
+            bubble.style.opacity = "0.75";
+            bubble.style.filter = "blur(3px)";
+            bubble.style.transform = "scale(1.03)";
+
+            const targetWidth =
+            link.offsetWidth + 24;
+
+            bubble.style.width =
+            (targetWidth + 20) + "px";
+
+            bubble.style.left =
+            (link.offsetLeft - 12) + "px";
+
+            setTimeout(() => {
+
+                bubble.style.width =
+                targetWidth + "px";
+
+                bubble.style.opacity = "1";
+                bubble.style.filter = "blur(0px)";
+                bubble.style.transform = "scale(1)";
+
+            }, 300);
+
+            setTimeout(() => {
+
+                window.location.href =
+                link.href;
+
+            }, 650);
+
+        });
+
+    });
+
+});
+
+</script>
+<body>
+  <nav class="project-nav">
+
+    <span class="nav-bubble"></span>
+
+    <a href="/index.html">Home</a>
+    <a href="/ARGlasses.html">USK</a>
+    <a href="/SubZero.html">SubZero</a>
+    <a href="/EMRLD.html">EMRLD</a>
+    <a href="/Trivet.html">Trivet</a>
+    <a href="/Archive.html">Archive</a>
+    <a href="/Leisure.html" class="active">Leisure</a>
+    <a href="/Comh.html">Comh</a>
+
+</nav>
+
+  <section class="hero">
+
+    <img
+      src="/leisure-icon.png"
+      alt="Leisure Logo"
+      class="hero-logo"
+    >
+
+  </section>
+
+  <div class="page-content">
+
+    <section class="project-info">
+
+      <div>
+        <h3>Project</h3>
+        <p>Leisure Category Branding</p>
+      </div>
+
+      <div>
+        <h3>Client</h3>
+        <p>Choice Stores</p>
+      </div>
+
+      <div>
+        <h3>Focus</h3>
+        <p>
+          Branding, Signage &
+          Environmental Graphics
+        </p>
+      </div>
+
+    </section>
+
+    <section class="gallery-section">
+
+      <div class="gallery">
+
+        <img
+          src="/leisure-hero.jpg"
+          alt="Leisure Store Front"
+        >
+
+        <img
+          src="/leisure-facade.jpg"
+          alt="Leisure Branding"
+        >
+
+      </div>
+
+    </section>
+
+    <section class="section">
+
+      <h2>Overview</h2>
+
+      <p>
+
+        The Leisure category identity was developed for
+        Choice Stores to create a distinctive retail
+        experience across multiple customer touchpoints.
+
+        The project included category branding,
+        large-scale signage, environmental graphics and
+        wayfinding systems designed to increase
+        visibility and create a stronger in-store
+        presence.
+
+      </p>
+
+    </section>
+
+    <section class="section">
+
+      <h2>Environmental Graphics</h2>
+
+      <p>
+
+        A flexible visual system was developed to work
+        across storefronts, category signage,
+        promotional graphics and wayfinding elements.
+
+        The resulting identity ensured consistency
+        throughout the customer journey while creating
+        a clear visual distinction for the Leisure
+        category.
+
+      </p>
+
+    </section>
+
+  </div>
+
+  <div class="footer">
+    Choice Stores • Leisure
+  </div>
+
+</body>
+
+</html>

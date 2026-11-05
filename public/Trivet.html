@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1.0"
+>
+
+<title>Trivet</title>
+
+<style>
+  .project-nav{
+    position:fixed;
+    top:30px;
+    left:30px;
+    z-index:1000;
+
+    display:flex;
+    align-items:center;
+    gap:4px;
+
+    height:55px;      /* ADD THIS */
+    padding:8px;
+
+    background:rgba(0,0,0,.14);
+
+    border-radius:999px;
+    overflow:hidden;
+
+    backdrop-filter:blur(10px);
+}
+
+.project-nav a{
+    position:relative;
+    z-index:2;
+
+    text-decoration:none;
+    color:#111;
+
+    font-size:.8rem;
+    line-height:1;    /* ADD THIS */
+
+    padding:12px 18px;
+
+    border-radius:999px;
+
+    transition:color .3s ease;
+}
+
+
+.project-nav a:hover{
+    color:#000;
+}
+
+.project-nav a.active{
+    background:none;
+}
+
+.nav-bubble{
+    position:absolute;
+    top:4px;
+    left:0;
+    z-index:1;
+
+    height:calc(100% - 8px);
+
+    background:rgba(255,255,255,.45);
+
+    backdrop-filter:
+        blur(24px)
+        saturate(180%);
+
+    -webkit-backdrop-filter:
+        blur(24px)
+        saturate(180%);
+
+    border-radius:999px;
+
+    border:1px solid rgba(255,255,255,.65);
+
+    box-shadow:
+        0 2px 6px rgba(0,0,0,.08),
+        0 10px 20px rgba(255,255,255,.15),
+        inset 0 1px 1px rgba(255,255,255,.95);
+
+    transition:
+        left .55s cubic-bezier(.34,1.56,.64,1),
+        width .55s cubic-bezier(.34,1.56,.64,1),
+        transform .25s ease,
+        opacity .3s ease,
+        filter .3s ease;
+}
+
+.nav-bubble::before{
+    content:"";
+
+    position:absolute;
+
+    top:2px;
+    left:8px;
+
+    width:70%;
+    height:45%;
+
+    border-radius:999px;
+
+    background:
+    linear-gradient(
+        to bottom,
+        rgba(255,255,255,.75),
+        rgba(255,255,255,0)
+    );
+
+    pointer-events:none;
+}
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+body{
+  background:#f4f1eb;
+  color:#222;
+  font-family:Arial,sans-serif;
+  overflow-x:hidden;
+  line-height:1.7;
+}
+
+.hero{
+  min-height:65vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+  padding:80px 30px;
+}
+
+.hero-content{
+  max-width:800px;
+}
+
+.hero h1{
+  font-size:5rem;
+  font-weight:400;
+  letter-spacing:.04em;
+}
+
+.hero p{
+  margin-top:25px;
+  font-size:1.1rem;
+  opacity:.8;
+}
+
+.hero-image{
+  max-width:1200px;
+  margin:auto;
+  padding:0 8vw 80px;
+}
+
+.hero-image img{
+  width:100%;
+  display:block;
+  border-radius:14px;
+}
+
+.info{
+  max-width:1200px;
+  margin:auto;
+  padding:0 8vw 80px;
+
+  display:grid;
+  grid-template-columns:
+  repeat(3,1fr);
+
+  gap:50px;
+}
+
+.info h3{
+  font-size:.75rem;
+  text-transform:uppercase;
+  letter-spacing:.2em;
+  opacity:.45;
+  margin-bottom:12px;
+}
+
+.gallery{
+  max-width:1200px;
+  margin:auto;
+  padding:0 8vw 120px;
+
+  display:grid;
+  grid-template-columns:
+  repeat(2,1fr);
+
+  gap:40px;
+}
+
+.gallery-item img{
+  width:100%;
+  display:block;
+  border-radius:12px;
+}
+
+.gallery-item p{
+  text-align:center;
+  margin-top:15px;
+  font-size:.95rem;
+}
+
+.statement{
+  max-width:900px;
+  margin:auto;
+  padding:0 8vw 120px;
+  text-align:center;
+}
+
+.statement h2{
+  font-size:2.5rem;
+  font-weight:400;
+  margin-bottom:30px;
+}
+
+.statement p{
+  opacity:.8;
+}
+
+.footer{
+  text-align:center;
+  padding:60px;
+  opacity:.4;
+}
+
+@media(max-width:900px){
+
+  .hero h1{
+    font-size:3rem;
+  }
+
+  .info{
+    grid-template-columns:1fr;
+    gap:30px;
+  }
+
+  .gallery{
+    grid-template-columns:1fr;
+  }
+
+}
+
+</style>
+
+</head>
+<script>
+
+function moveBubble(){
+
+    const active =
+    document.querySelector(".project-nav a.active");
+
+    const bubble =
+    document.querySelector(".nav-bubble");
+
+    if(!active || !bubble) return;
+
+    bubble.style.width = "100px";
+
+    bubble.style.left =
+    (active.offsetLeft - 12) + "px";
+}
+
+window.addEventListener("load", () => {
+
+    const bubble =
+    document.querySelector(".nav-bubble");
+
+    bubble.style.transition = "none";
+
+    moveBubble();
+
+    requestAnimationFrame(() => {
+
+        bubble.style.transition =
+        `left .55s cubic-bezier(.34,1.56,.64,1),
+         width .55s cubic-bezier(.34,1.56,.64,1),
+         transform .25s ease,
+         opacity .3s ease,
+         filter .3s ease`;
+
+    });
+
+    document
+    .querySelectorAll(".project-nav a")
+    .forEach(link => {
+
+        link.addEventListener("click", e => {
+
+            e.preventDefault();
+
+            bubble.style.opacity = "0.75";
+            bubble.style.filter = "blur(3px)";
+            bubble.style.transform = "scale(1.03)";
+
+           const targetWidth = 100;
+
+            bubble.style.width =
+            (targetWidth + 20) + "px";
+
+            bubble.style.left =
+            (link.offsetLeft - 12) + "px";
+
+            setTimeout(() => {
+
+                bubble.style.width =
+                targetWidth + "px";
+
+                bubble.style.opacity = "1";
+                bubble.style.filter = "blur(0px)";
+                bubble.style.transform = "scale(1)";
+
+            }, 300);
+
+            setTimeout(() => {
+
+                window.location.href =
+                link.href;
+
+            }, 650);
+
+        });
+
+    });
+
+});
+
+</script>
+<body>
+
+  <nav class="project-nav">
+
+    <span class="nav-bubble"></span>
+
+    <a href="/index.html">Home</a>
+    <a href="/ARGlasses.html">USK</a>
+    <a href="/SubZero.html">SubZero</a>
+    <a href="/EMRLD.html">EMRLD</a>
+    <a href="/Trivet.html" class="active">Trivet</a>
+    <a href="/Archive.html">Archive</a>
+    <a href="/Leisure.html">Leisure</a>
+    <a href="/Comh.html">Comh</a>
+
+</nav>
+
+
+<section class="hero">
+
+  <div class="hero-content">
+
+    <h1>Trivet</h1>
+
+    <p>
+      A decorative coaster inspired by the
+      triskele symbol, combining functional
+      surface protection with a contemporary
+      interpretation of Celtic visual language.
+    </p>
+
+  </div>
+
+</section>
+
+<section class="hero-image">
+
+  <img
+    src="/trivet-hero.png"
+    alt="Trivet coaster with coffee mug"
+  >
+
+</section>
+
+<section class="info">
+
+  <div>
+    <h3>Project</h3>
+    <p>Coaster Design</p>
+  </div>
+
+  <div>
+    <h3>Focus</h3>
+    <p>
+      Product Design,
+      CAD Modelling,
+      Packaging
+    </p>
+  </div>
+
+  <div>
+    <h3>Inspiration</h3>
+    <p>
+      Celtic symbolism and
+      everyday ritual objects.
+    </p>
+  </div>
+
+</section>
+
+<section class="statement">
+
+  <h2>
+    A contemporary interpretation of
+    a traditional symbol.
+  </h2>
+
+  <p>
+    Trivet explores how cultural motifs can be
+    translated into modern domestic products.
+    The triskele-inspired geometry functions as
+    both ornament and structure, creating a
+    product intended for everyday use while
+    maintaining a strong visual identity.
+  </p>
+
+</section>
+
+<section class="gallery">
+
+  <div class="gallery-item">
+
+    <img
+      src="/trivet-exploded.png"
+      alt="Exploded view"
+    >
+
+    <p>
+      Exploded assembly view showing the
+      layered construction.
+    </p>
+
+  </div>
+
+  <div class="gallery-item">
+
+    <img
+      src="/trivet-packaging.png"
+      alt="Packaging design"
+    >
+
+    <p>
+      Packaging concept developed to extend
+      the project's visual language.
+    </p>
+
+  </div>
+
+</section>
+
+<footer class="footer">
+  Trivet • Product Design Concept
+</footer>
+
+</body>
+
+</html>

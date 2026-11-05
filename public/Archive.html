@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Archive</title>
+
+<style>
+    
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    background:#f3f0ea;
+    color:#222;
+    font-family:Arial,sans-serif;
+    overflow-x:hidden;
+}
+
+/* NAV */
+
+.project-nav{
+    position:fixed;
+    top:30px;
+    left:30px;
+    z-index:1000;
+
+    display:flex;
+    align-items:center;
+    gap:4px;
+
+    height:55px;      /* ADD THIS */
+    padding:8px;
+
+    background:rgba(0,0,0,.14);
+
+    border-radius:999px;
+    overflow:hidden;
+
+    backdrop-filter:blur(10px);
+}
+
+.project-nav a{
+    position:relative;
+    z-index:2;
+
+    text-decoration:none;
+    color:#111;
+
+    font-size:.8rem;
+    line-height:1;    /* ADD THIS */
+
+    padding:12px 18px;
+
+    border-radius:999px;
+
+    transition:color .3s ease;
+}
+
+
+.project-nav a:hover{
+    color:#000;
+}
+
+.project-nav a.active{
+    background:none;
+}
+
+.nav-bubble{
+    position:absolute;
+    top:4px;
+    left:0;
+
+    z-index:1;
+
+    height:calc(100% - 8px);
+
+    background:rgba(255,255,255,.45);
+
+    backdrop-filter:
+        blur(24px)
+        saturate(180%);
+
+    -webkit-backdrop-filter:
+        blur(24px)
+        saturate(180%);
+
+    border-radius:999px;
+
+    border:1px solid rgba(255,255,255,.65);
+
+    box-shadow:
+        0 2px 6px rgba(0,0,0,.08),
+        0 10px 20px rgba(255,255,255,.15),
+        inset 0 1px 1px rgba(255,255,255,.95);
+
+    opacity:1;
+    filter:blur(0px);
+
+    transition:
+        left .55s cubic-bezier(.34,1.56,.64,1),
+        width .55s cubic-bezier(.34,1.56,.64,1),
+        transform .25s ease,
+        opacity .3s ease,
+        filter .3s ease;
+}
+
+.nav-bubble::before{
+    content:"";
+
+    position:absolute;
+
+    top:2px;
+    left:8px;
+
+    width:70%;
+    height:45%;
+
+    border-radius:999px;
+
+    background:
+    linear-gradient(
+        to bottom,
+        rgba(255,255,255,.75),
+        rgba(255,255,255,0)
+    );
+
+    pointer-events:none;
+}
+
+/* PAGE */
+.cover-card img{
+    width:100%;
+    height:260px;
+
+    object-fit:contain;
+
+    display:block;
+
+    border-radius:16px;
+}
+
+
+
+.container{
+    width:min(1400px,92vw);
+    margin:auto;
+
+    padding-top:140px;
+    padding-bottom:300px;
+}
+
+.archive-title{
+    font-size:5rem;
+    font-weight:300;
+    text-align:center;
+    margin-bottom:25px;
+}
+
+.description{
+    width:700px;
+    max-width:100%;
+    margin:0 auto 80px;
+    text-align:center;
+    line-height:1.8;
+}
+
+/* COVERFLOW */
+
+.coverflow-wrapper{
+    position:relative;
+    width:100%;
+    height: 320px;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.coverflow{
+    position:relative;
+    width:100%;
+    height:100%;
+
+    perspective:1400px;
+}
+
+.cover-card{
+    position:absolute;
+    left:50%;
+    top:50%;
+
+    cursor:pointer;
+
+    transform-style:preserve-3d;
+
+    transition:
+        transform .55s ease,
+        opacity .55s ease;
+}
+
+.cover-card.active{
+    z-index:100;
+    card.style.filter =
+"drop-shadow(0 25px 40px rgba(0,0,0,.18))";
+}
+.cover-card{
+    width:260px;
+    height:220px;
+    card.style.filter =
+"drop-shadow(0 8px 20px rgba(0,0,0,.08))";
+}
+
+/* ARROWS */
+
+.flow-arrow{
+    position:absolute;
+    top:50%;
+
+    transform:translateY(-50%);
+
+    background:none;
+    border:none;
+
+    color:#fff;
+
+    font-size:4rem;
+    font-weight:300;
+
+   
+
+    cursor:pointer;
+    z-index:9999;
+}
+
+.flow-arrow.left{
+    left:50%;
+    margin-left:-200px;
+}
+
+.flow-arrow.right{
+    left:50%;
+    margin-left:160px;
+}
+
+/* INFO */
+
+.project-info{
+    width:260px;
+
+    margin:20px auto 0;
+
+    text-align:center;
+}
+
+.project-info h2{
+    font-size:1.75rem;
+    font-weight:500;
+    color:#555;
+    margin-bottom:4px;
+}
+
+.project-info p{
+    color:#7a7a7a;
+    font-size:.8rem;
+    line-height:1.5;
+}
+
+@media (max-width:900px){
+
+    .archive-title{
+        font-size:3rem;
+    }
+
+    .cover-card.active{
+        width:280px;
+    }
+
+    .flow-arrow.left{
+    left:50%;
+    margin-left:-420px;
+}
+
+.flow-arrow.right{
+    left:50%;
+    margin-left:360px;
+}
+
+}
+
+</style>
+</head>
+
+<body>
+
+<nav class="project-nav">
+
+    <span class="nav-bubble"></span>
+
+    <a href="/index.html">Home</a>
+    <a href="/ARGlasses.html">USK</a>
+    <a href="/SubZero.html">SubZero</a>
+    <a href="/EMRLD.html">EMRLD</a>
+    <a href="/Trivet.html">Trivet</a>
+    <a href="/Archive.html" class="active">Archive</a>
+    <a href="/Leisure.html">Leisure</a>
+    <a href="/Comh.html">Comh</a>
+
+</nav>
+
+<div class="container">
+
+    <h1 class="archive-title">
+        ARCHIVE
+    </h1>
+
+    <p class="description">
+        A collection of experimental projects exploring
+        logo design, motion graphics, creative coding
+        and interactive digital experiences.
+    </p>
+
+    <div class="coverflow-wrapper">
+
+        <button id="prevBtn" class="flow-arrow left">
+            ‹
+        </button>
+
+        <div id="coverflow" class="coverflow"></div>
+
+        <button id="nextBtn" class="flow-arrow right">
+            ›
+        </button>
+
+    </div>
+
+    <div class="project-info">
+
+        <h2 id="projectTitle"></h2>
+
+        <p id="projectDescription"></p>
+
+    </div>
+
+</div>
+
+<script>
+
+const projects = [
+
+{
+    title:"Friday Night",
+    image:"./friday-night-phone.png",
+    description:"Social campaign and promotional graphics."
+},
+
+{
+    title:"Garden Party",
+    image:"./garden-party.png",
+    description:"Poster series and promotional graphics."
+},
+
+{
+    title:"LS Logo",
+    image:"./ls-logo.jpg",
+    description:"Identity development and logo exploration."
+},
+
+{
+    title:"School Logo",
+    image:"./our-ladys-school.jpg",
+    description:"Branding and visual identity development."
+}
+
+];
+
+let current = 0;
+
+const flow =
+document.getElementById("coverflow");
+
+const title =
+document.getElementById("projectTitle");
+
+const description =
+document.getElementById("projectDescription");
+
+/* NAV BUBBLE */
+
+function moveBubble(){
+
+    const active =
+    document.querySelector(".project-nav a.active");
+
+    const bubble =
+    document.querySelector(".nav-bubble");
+
+    bubble.style.width =
+    (active.offsetWidth + 24) + "px";
+
+    bubble.style.left =
+    (active.offsetLeft - 12) + "px";
+}
+
+window.addEventListener("load", () => {
+
+    const bubble =
+    document.querySelector(".nav-bubble");
+
+    bubble.style.transition = "none";
+
+    moveBubble();
+
+    requestAnimationFrame(() => {
+
+        bubble.style.transition =
+        `left .55s cubic-bezier(.34,1.56,.64,1),
+         width .55s cubic-bezier(.34,1.56,.64,1),
+         transform .25s ease,
+         opacity .3s ease,
+         filter .3s ease`;
+
+    });
+
+    document
+    .querySelectorAll(".project-nav a")
+    .forEach(link => {
+
+        link.addEventListener("click", e => {
+
+            e.preventDefault();
+
+            bubble.style.opacity = "0.75";
+            bubble.style.filter = "blur(3px)";
+            bubble.style.transform = "scale(1.03)";
+
+            const targetWidth =
+            link.offsetWidth + 24;
+
+            bubble.style.width =
+            (targetWidth + 20) + "px";
+
+            bubble.style.left =
+            (link.offsetLeft - 12) + "px";
+
+            setTimeout(() => {
+
+                bubble.style.width =
+                targetWidth + "px";
+
+                bubble.style.opacity = "1";
+                bubble.style.filter = "blur(0px)";
+                bubble.style.transform = "scale(1)";
+
+            }, 300);
+
+            setTimeout(() => {
+
+                window.location.href =
+                link.href;
+
+            }, 650);
+
+        });
+
+    });
+
+});
+
+/* COVERFLOW */
+
+function renderFlow(){
+
+    flow.innerHTML = "";
+
+    projects.forEach((project,index)=>{
+
+        const card =
+        document.createElement("div");
+
+        card.className =
+        "cover-card";
+
+        let offset =
+        index - current;
+
+        const total =
+        projects.length;
+
+        if(offset > total / 2){
+            offset -= total;
+        }
+
+        if(offset < -total / 2){
+            offset += total;
+        }
+
+        const abs =
+        Math.abs(offset);
+
+        card.innerHTML =
+        `<img src="${project.image}" alt="${project.title}">`;
+
+        if(index === current){
+
+            card.classList.add("active");
+
+            card.style.transform =
+`
+translate(-50%,-50%)
+rotateY(0deg)
+scale(1.05)
+`;
+
+            card.style.opacity = 1;
+
+            card.style.zIndex = 100;
+
+        }else{
+
+            const x =
+            offset * 220;
+
+            const rotate =
+offset < 0 ? 28 : -28;
+
+            card.style.transform =
+            `
+            translate(calc(-50% + ${x}px),-50%)
+            rotateY(${rotate}deg)
+            scale(.78)
+            `;
+
+            card.style.opacity =
+            Math.max(.45,1-abs*.15);
+
+            card.style.zIndex =
+            50 - abs;
+
+        }
+
+        card.onclick = ()=>{
+
+            current = index;
+
+            renderFlow();
+
+        };
+
+        flow.appendChild(card);
+
+    });
+
+    title.textContent =
+    projects[current].title;
+
+    description.textContent =
+    projects[current].description;
+}
+
+document
+.getElementById("nextBtn")
+.addEventListener("click",()=>{
+
+    current++;
+
+    if(current >
+       projects.length - 1){
+
+        current = 0;
+
+    }
+
+    renderFlow();
+
+});
+
+renderFlow();
+
+</script>
+
+</body>
+</html>
