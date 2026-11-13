@@ -340,7 +340,7 @@ promptStyle.innerHTML = `
 .charm-prompt{
   position:fixed;
   right:40px;
-  bottom:40px;
+  bottom:100px;
   text-align:right;
   z-index:1000;
   pointer-events:none;
