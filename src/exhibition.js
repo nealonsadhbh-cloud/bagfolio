@@ -16,6 +16,8 @@ const artworkDialogMeta = document.querySelector('#artwork-dialog-meta')
 const artworkDialogDescription = document.querySelector('#artwork-dialog-description')
 const artworkHint = document.querySelector('#walkthrough-artwork-hint')
 
+if (artworkHint) artworkHint.hidden = true
+
 if (viewport && walkthrough) {
   const scene = new THREE.Scene()
   const interiorBackground = new THREE.Color(0xe4e0d8)
@@ -256,10 +258,10 @@ if (viewport && walkthrough) {
   const setWalking = (walking) => {
     isWalking = walking
     if (overlay) overlay.hidden = walking
-    if (artworkHint) artworkHint.hidden = walking
     arrowTarget.hidden = !walking || routeStage === 'inside'
     leftArrowTarget.hidden = !walking || routeStage !== 'inside'
     rightArrowTarget.hidden = !walking || routeStage !== 'inside'
+    if (artworkHint) artworkHint.hidden = !walking || routeStage !== 'inside'
   }
 
   const enterWalkthrough = () => {
@@ -743,6 +745,15 @@ if (viewport && walkthrough) {
         }
       }
       camera.rotation.set(pitch, yaw, 0)
+
+      if (routeStage === 'inside' && galleryRoute) {
+        const entranceThreshold = 0.3
+        const atEntrance = galleryRoute.progress < entranceThreshold || galleryRoute.progress > galleryRoute.perimeter - entranceThreshold
+        if (atEntrance) {
+          routeStage = 'entrance'
+          if (artworkHint) artworkHint.hidden = true
+        }
+      }
 
       if (routeStage === 'inside') {
         arrowTarget.hidden = true
