@@ -1,7 +1,4 @@
 {
-  "buildCommand": "npm run build",
-  "outputDirectory": "dist",
-  "env": {
-    "ENABLE_GIT_LFS": "1"
-  }
+  "buildCommand": "git lfs install && git lfs pull && npm run build",
+  "outputDirectory": "dist"
 }
