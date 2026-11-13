@@ -427,10 +427,8 @@ if (viewport && walkthrough) {
       routeLeft.set(routeForward.z, 0, -routeForward.x).normalize()
       routeStage = 'inside'
       justEnteredGallery = true
+      arrowTarget.classList.remove('walkthrough-arrow-target--outside')
       if (artworkHint) artworkHint.hidden = false
-      arrowTarget.hidden = true
-      leftArrowTarget.hidden = false
-      rightArrowTarget.hidden = false
       movementStart.copy(camera.position)
       movementEnd.copy(camera.position)
       movementProgress = 1
@@ -445,7 +443,12 @@ if (viewport && walkthrough) {
 
   const startNavigation = () => {
     if (!isWalking || !modelLoaded || movementProgress < 1) return
-    if (routeStage === 'inside') return
+    
+    if (routeStage === 'inside') {
+      navigateGalleryForward()
+      return
+    }
+    
     if (routeStage === 'entrance') {
       transitionToGallery()
       return
@@ -521,6 +524,29 @@ if (viewport && walkthrough) {
     turningDuringMovement = true
     pendingGalleryProgress = step.progress
     movementDuration = 0.9
+    movementProgress = 0
+  }
+
+  const navigateGalleryForward = () => {
+    if (!isWalking || !modelLoaded || routeStage !== 'inside' || movementProgress < 1 || !galleryRoute) return
+
+    const forwardX = -Math.sin(yaw)
+    const forwardZ = -Math.cos(yaw)
+    const forwardDistance = 1.2
+    
+    const candidates = [1, 0.75, 0.5, 0.25].map((scale) => ({
+      x: forwardX * forwardDistance * scale,
+      z: forwardZ * forwardDistance * scale,
+    }))
+    
+    const step = candidates.find((candidate) => !blocked(candidate.x, candidate.z))
+    if (!step) return
+
+    movementStart.copy(camera.position)
+    movementEnd.copy(camera.position)
+    movementEnd.x += step.x
+    movementEnd.z += step.z
+    movementDuration = 0.65
     movementProgress = 0
   }
 
@@ -751,7 +777,13 @@ if (viewport && walkthrough) {
       }
       camera.rotation.set(pitch, yaw, 0)
 
-      if (routeStage === 'inside' && galleryRoute && !justEnteredGallery) {
+      let shouldCheckEntrance = true
+      if (routeStage === 'inside' && galleryRoute && justEnteredGallery) {
+        shouldCheckEntrance = false
+        justEnteredGallery = false
+      }
+      
+      if (shouldCheckEntrance && routeStage === 'inside' && galleryRoute) {
         const entranceThreshold = 0.5
         const atEntrance = galleryRoute.progress < entranceThreshold || galleryRoute.progress > galleryRoute.perimeter - entranceThreshold
         if (atEntrance) {
@@ -759,34 +791,25 @@ if (viewport && walkthrough) {
           if (artworkHint) artworkHint.hidden = true
         }
       }
-      
-      justEnteredGallery = false
 
       if (routeStage === 'inside') {
-        arrowTarget.hidden = true
         if (artworkHint) artworkHint.hidden = false
+        arrowTarget.classList.remove('walkthrough-arrow-target--outside')
         const forwardX = -Math.sin(yaw)
         const forwardZ = -Math.cos(yaw)
-        const rightX = Math.cos(yaw)
-        const rightZ = -Math.sin(yaw)
         const forwardDistance = 0.7
-        const sideDistance = 0.45
 
         projectFloorArrow(
-          leftArrowTarget,
-          leftArrowMark,
-          camera.position.x + forwardX * forwardDistance - rightX * sideDistance,
-          camera.position.z + forwardZ * forwardDistance - rightZ * sideDistance,
-          -Math.PI / 2,
+          arrowTarget,
+          arrowMark,
+          camera.position.x + forwardX * forwardDistance,
+          camera.position.z + forwardZ * forwardDistance,
+          0,
         )
-        projectFloorArrow(
-          rightArrowTarget,
-          rightArrowMark,
-          camera.position.x + forwardX * forwardDistance + rightX * sideDistance,
-          camera.position.z + forwardZ * forwardDistance + rightZ * sideDistance,
-          Math.PI / 2,
-        )
+        leftArrowTarget.hidden = true
+        rightArrowTarget.hidden = true
       } else {
+        arrowTarget.classList.add('walkthrough-arrow-target--outside')
         leftArrowTarget.hidden = true
         rightArrowTarget.hidden = true
         if (artworkHint) artworkHint.hidden = true

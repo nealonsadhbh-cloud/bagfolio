@@ -262,6 +262,18 @@
       display: none;
     }
 
+    .walkthrough-arrow-target:not(.walkthrough-arrow-target--outside) {
+      border-radius: 0;
+      width: auto;
+      height: auto;
+      transform: translate(-50%, -50%);
+    }
+
+    .walkthrough-arrow-target:not(.walkthrough-arrow-target--outside) .walkthrough-arrow-mark {
+      width: 60px;
+      height: 60px;
+    }
+
     .walkthrough-arrow-target--outside::before {
       content: "";
       position: absolute;
