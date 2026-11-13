@@ -426,6 +426,9 @@ if (viewport && walkthrough) {
       routeLeft.set(routeForward.z, 0, -routeForward.x).normalize()
       routeStage = 'inside'
       if (artworkHint) artworkHint.hidden = false
+      arrowTarget.hidden = true
+      leftArrowTarget.hidden = false
+      rightArrowTarget.hidden = false
       movementStart.copy(camera.position)
       movementEnd.copy(camera.position)
       movementProgress = 1
@@ -747,7 +750,7 @@ if (viewport && walkthrough) {
       camera.rotation.set(pitch, yaw, 0)
 
       if (routeStage === 'inside' && galleryRoute) {
-        const entranceThreshold = 0.3
+        const entranceThreshold = 0.5
         const atEntrance = galleryRoute.progress < entranceThreshold || galleryRoute.progress > galleryRoute.perimeter - entranceThreshold
         if (atEntrance) {
           routeStage = 'entrance'
@@ -757,6 +760,9 @@ if (viewport && walkthrough) {
 
       if (routeStage === 'inside') {
         arrowTarget.hidden = true
+        leftArrowTarget.hidden = false
+        rightArrowTarget.hidden = false
+        if (artworkHint) artworkHint.hidden = false
         const forwardX = -Math.sin(yaw)
         const forwardZ = -Math.cos(yaw)
         const rightX = Math.cos(yaw)
@@ -781,6 +787,7 @@ if (viewport && walkthrough) {
       } else {
         leftArrowTarget.hidden = true
         rightArrowTarget.hidden = true
+        if (artworkHint) artworkHint.hidden = true
         const step = getNavigationStep()
         projectFloorArrow(
           arrowTarget,
