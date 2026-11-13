@@ -2,6 +2,7 @@ import './style.css'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
+import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js'
 
 
 // SCENE
@@ -44,17 +45,7 @@ document.body.appendChild(
   renderer.domElement
 )
 
-// SCROLL AREA
 
-const scrollContainer =
-  document.createElement('div')
-
-scrollContainer.style.height =
-  '500vh'
-
-document.body.appendChild(
-  scrollContainer
-)
 
 // NAME TAG
 
@@ -63,12 +54,14 @@ const nameTag = document.createElement('div')
 nameTag.className = 'name-tag'
 
 nameTag.innerHTML = `
-  <div class="name-title">
-    Sadhbh Nealon
+  <div class="name-title" style="cursor: pointer;">
+    <a href="https://www.linkedin.com/in/sadhbh-nealon-7a9035161" target="_blank" style="text-decoration: none; color: inherit;">
+      Sadhbh Nealon
+    </a>
   </div>
 
   <div class="name-subtitle">
-    3D Design • Motion Graphics • Systems
+    Spatial Design • Installation • Visual Storytelling
   </div>
 `
 
@@ -100,9 +93,15 @@ arHud.innerHTML = `
 
 <div class="route-line"></div>
 
-<div class="route-node node1"></div>
-<div class="route-node node2"></div>
-<div class="route-node node3"></div>
+<div class="route-node node1">
+  <span class="route-label"><span>Base Station</span><small>2.1 km</small></span>
+</div>
+<div class="route-node node2">
+  <span class="route-label"><span>Lift Access</span><small>320 m</small></span>
+</div>
+<div class="route-node node3">
+  <span class="route-label"><span>Summit Route</span><small>1.4 km</small></span>
+</div>
 
 `
 
@@ -124,7 +123,7 @@ promptStyle.innerHTML = `
   z-index:3000;
 
   background:
-    rgba(0,0,0,.92);
+    rgba(0,0,0,.98);
 
   transition:
     opacity .5s ease;
@@ -195,8 +194,8 @@ promptStyle.innerHTML = `
   left:53%;
   top:34%;
 
-  width:12px;
-  height:45%;
+  width:10px;
+  height:53%;
 
   transform:
     rotate(11deg);
@@ -204,13 +203,13 @@ promptStyle.innerHTML = `
   background:
     repeating-linear-gradient(
       to bottom,
-      #8fe9ff 0 24px,
-      transparent 24px 42px
+      #8fe9ff 0 14px,
+      transparent 14px 34px
     );
 
   filter:
     drop-shadow(
-      0 0 20px #8fe9ff
+      0 0 12px #8fe9ff
     );
 
 }
@@ -226,23 +225,77 @@ promptStyle.innerHTML = `
   background:#a8efff;
 
   box-shadow:
-    0 0 25px #a8efff;
+    0 0 18px #a8efff;
+
+}
+
+.route-node::after{
+
+  content:"";
+
+  position:absolute;
+
+  left:3px;
+  top:12px;
+
+  border-left:4px solid transparent;
+  border-right:4px solid transparent;
+  border-top:7px solid #a8efff;
+
+}
+
+.route-label{
+
+  position:absolute;
+
+  top:11px;
+  left:16px;
+
+  display:flex;
+  flex-direction:column;
+  gap:3px;
+
+  color:#b9f4ff;
+  font-size:1rem;
+  font-weight:600;
+  line-height:1.25;
+  white-space:nowrap;
+  z-index:2;
+
+}
+
+.node1 .route-label,
+.node2 .route-label{
+  left:auto;
+  right:20px;
+  text-align:right;
+}
+
+.node3 .route-label{
+  left:20px;
+}
+
+.route-label small{
+
+  color:#8fe9ff;
+  font-size:.85rem;
+  font-weight:400;
 
 }
 
 .node1{
   left:46%;
-  top:72%;
+  top:78%;
 }
 
 .node2{
   left:52%;
-  top:52%;
+  top:62%;
 }
 
 .node3{
   left:58%;
-  top:34%;
+  top:43%;
 }
 .compass{
 
@@ -330,15 +383,20 @@ const promptLine2 =
 
 // show "Charmed?"
 
-setTimeout(() => {
-  promptLine1.classList.add('show')
-}, 3000)
+if (
+  window.location.pathname === '/' ||
+  window.location.pathname === '/index.html'
+) {
 
-// show "click one"
+  setTimeout(() => {
+    promptLine1.classList.add('show')
+  }, 3000)
 
-setTimeout(() => {
-  promptLine2.classList.add('show')
-}, 5000)
+  setTimeout(() => {
+    promptLine2.classList.add('show')
+  }, 5000)
+
+}
 
 
 
@@ -390,17 +448,27 @@ const raycaster =
 const mouse =
   new THREE.Vector2()
 
+const isKeychainMesh = (name) =>
+  name === 'Mesh_1_1' ||
+  name === 'Mesh_1001' ||
+  name === 'Torus009' ||
+  name === 'Plastic001' ||
+  name === 'Plastic.001' ||
+  name.startsWith('Mesh005')
+
 // MODEL VARIABLES
 
 let bagModel = null
 
 let leisureClicked = false
+let leisureClickedAt = 0
 let archiveClicked = false
+let archiveClickedAt = 0
 let emrldClicked = false
 let comhClicked = false
+let comhClickedAt = 0
 let subzeroClicked = false
 
-let leisureTimer = 0
 let archiveTimer = 0
 
 let leisureCharm = null
@@ -410,42 +478,26 @@ let emrldRope = null
 let carabinerParts = []
 
 
-let leisureStartX = 0
+const leisureSway = { value: 0 }
 let sunglassesLens = null
 let sunglassesClicked = false
+let sunglassesClickedAt = 0
 
 let trivetClicked = false
 let triskeleCharm = null
 
 let lensPulse = 0
-let scrollProgress = 0
-let hasScrolled = false
+let idleTime = 0
 
 
 
 // LOAD MODEL
 
 
-const loader =
-  new GLTFLoader()
-window.addEventListener(
-  'wheel',
-  (e) => {
+const loader = new GLTFLoader()
+loader.setMeshoptDecoder(MeshoptDecoder)
 
-    hasScrolled = true
 
-    scrollProgress +=
-      e.deltaY * 0.0015
-
-    scrollProgress =
-      THREE.MathUtils.clamp(
-        scrollProgress,
-        0,
-        1
-      )
-
-  }
-)
 loader.load(
 
   '/bag.glb',
@@ -482,40 +534,51 @@ loader.load(
 }
 
     if (
-      child.name === 'Mesh_0005_1'
+      child.name === 'Mesh_0005_1' ||
+      child.name.includes('Sunglasses') && (child.name.includes('Lens') || child.isMesh)
     ) {
 
-      sunglassesLens = child
+      if (!sunglassesLens || child.name.includes('Lens')) {
+        sunglassesLens = child
 
-      console.log(
-        'LENS MATERIAL',
-        sunglassesLens.material
-      )
+        console.log(
+          'LENS FOUND:',
+          child.name,
+          child.material
+        )
 
-      sunglassesLens.material.transparent =
-        true
+        if (sunglassesLens.material) {
+          sunglassesLens.material.transparent = true
+        }
+      }
 
     }
 
-    if (
-      child.name === 'Mesh_1_1'
-    ) {
-
+    if (child.name === 'Torus009' && child.isMesh) {
       leisureCharm = child
-
-      leisureStartX =
-        child.position.x
-
+      child.material = child.material.clone()
+      child.material.onBeforeCompile = (shader) => {
+        shader.uniforms.leisureSway = leisureSway
+        shader.uniforms.leisureTransform = { value: child.matrix.clone() }
+        // The Leisure logo shares a mesh with other bag details.
+        shader.vertexShader = shader.vertexShader
+          .replace('#include <common>', `#include <common>
+            uniform float leisureSway;
+            uniform mat4 leisureTransform;`)
+          .replace('#include <begin_vertex>', `#include <begin_vertex>
+            vec3 leisurePosition = (leisureTransform * vec4(transformed, 1.0)).xyz;
+            if (leisurePosition.x > 0.085 && leisurePosition.x < 0.135 &&
+                leisurePosition.y > 0.12 && leisurePosition.y < 0.162) {
+              transformed.x += leisureSway;
+            }`)
+      }
     }
 
     if (
-      child.name === 'Lock_Shackle'
-    ) {
-
-      lockShackle = child
-
-    }
-
+  child.name === 'Тело1-1'
+) {
+  lockShackle = child
+}
     if (
       child.name === 'Torus009' ||
       child.name === 'BézierCurve004'
@@ -602,17 +665,13 @@ window.addEventListener(
       console.log(object.name)
 
       if (
-        object.name.startsWith('Mesh_0005') ||
-        object.name === 'Mesh_1_1' ||
-        object.name === 'Mesh_1001' ||
-        object.name === 'Lock_Shackle' ||
+        isKeychainMesh(object.name) ||
+        object.name.startsWith('Sunglasses') ||
         object.name === 'Triskele_2' ||
         object.name === 'Тело3-1' ||
-        object.name.startsWith('Mesh005') ||
-        object.name.includes('Torus') ||
-        object.name.includes('BézierCurve') ||
-        object.name.includes('Carabiner') ||
-        object.name.includes('Latch')
+        object.name === 'BézierCurve004' ||
+        object.name === 'Lock_Body' ||
+        object.name === 'Тело1-1'
       ) {
 
         renderer.domElement.style.cursor =
@@ -666,52 +725,64 @@ window.addEventListener(
         object.name
       )
 
-      // LEISURE
+      if (leisureClicked) return
 
+      const hitPosition = bagModel.worldToLocal(intersects[0].point.clone())
       if (
-        object.name ===
-        'Mesh_1_1'
+        object === leisureCharm &&
+        hitPosition.x > 0.085 && hitPosition.x < 0.135 &&
+        hitPosition.y > 0.12 && hitPosition.y < 0.162
       ) {
-
         leisureClicked = true
+        leisureClickedAt = performance.now()
         controls.autoRotate = false
 
-        setTimeout(
-          () => {
-            window.location.href =
-              '/Leisure.html'
-          },
-          2200
-        )
+        setTimeout(() => {
+          window.location.href = '/Commercial.html'
+        }, 1600)
+
+        return
+      }
+
+      if (isKeychainMesh(object.name)) {
+        console.log('COMH CLICKED - KEYCHAIN')
+        comhClicked = true
+        comhClickedAt = performance.now()
+        controls.autoRotate = false
+
+        setTimeout(() => {
+          window.location.href = '/Comh.html'
+        }, 2200)
+
+        return
       }
 
       // EMRLD
 
       if (
-        object.name.includes('Torus') ||
-        object.name.includes('BézierCurve')
+        object.name === 'BézierCurve004'
       ) {
 
+        console.log('EMRLD CLICKED - GREEN THREAD')
         emrldClicked = true
         controls.autoRotate = false
 
-        setTimeout(
-          () => {
-            window.location.href =
-              '/EMRLD.html'
-          },
-          1800
-        )
+        window.location.href =
+          '/ARGlasses.html#emrld'
+
+        return
       }
 
       // ARCHIVE
 
       if (
-        object.name === 'Mesh_1001' ||
-        object.name === 'Lock_Shackle'
-      ) {
+  object.name === 'Lock_Body' ||
+  object.name === 'Тело1-1'
+) {
 
+        console.log('ARCHIVE CLICKED')
         archiveClicked = true
+        archiveClickedAt = performance.now()
         controls.autoRotate = false
 
         setTimeout(
@@ -719,8 +790,10 @@ window.addEventListener(
             window.location.href =
               '/Archive.html'
           },
-          2200
+          1200
         )
+
+        return
       }
 
       // COMH
@@ -729,6 +802,7 @@ window.addEventListener(
         object.name.startsWith('Mesh005')
       ) {
 
+        console.log('COMH CLICKED')
         comhClicked = true
         controls.autoRotate = false
 
@@ -739,6 +813,8 @@ window.addEventListener(
           },
           2200
         )
+
+        return
       }
 
       // SUBZERO
@@ -757,16 +833,20 @@ window.addEventListener(
 
         }, 1800)
 
+        return
       }
       // SUNGLASSES
 
-     if (
-  object.name.startsWith('Mesh_0005')
+      if (archiveClicked) return
+
+      if (
+  object.name.startsWith('Sunglasses')
 ) {
 
-  console.log('HUD ACTIVATED')
+  console.log('SUNGLASSES/ARGlasses CLICKED')
 
   sunglassesClicked = true
+  sunglassesClickedAt = performance.now()
 
   controls.autoRotate = false
 
@@ -779,26 +859,9 @@ window.addEventListener(
 
   }, 2500)
 
+  return
 }
-
-
-      // TRIVET
-
-      if (
-        object.name === 'Triskele_2' ||
-        object.name === 'Тело3-1'
-      ) {
-
-        controls.autoRotate = false
-
-        setTimeout(() => {
-
-          window.location.href = '/Trivet.html'
-
-        }, 1800)
-
-      }
-      // TRIVET
+// TRIVET - REMOVED DUPLICATE
 
       if (
         object.name === 'Triskele_2' ||
@@ -811,11 +874,11 @@ window.addEventListener(
 
         setTimeout(() => {
 
-          window.location.href =
-            '/Trivet.html'
+          window.location.href = '/ARGlasses.html#trivet'
 
         }, 1800)
 
+        return
       }
 
 
@@ -832,130 +895,33 @@ function animate() {
   )
 
   controls.update()
-const p = Math.min(
-  scrollProgress,
-  1
-)
-if (!hasScrolled) {
+controls.enabled = false
 
-  controls.autoRotate = true
-  controls.autoRotateSpeed = 0.55
+idleTime += 0.003
 
-} else {
-
-  controls.autoRotateSpeed =
-    THREE.MathUtils.lerp(
-      0.55,
-      0,
-      p
-    )
-
-}
-
-controls.autoRotateSpeed =
-  THREE.MathUtils.lerp(
-    0.55,
-    0,
-    p
-  )
-
-if (p < 0.05) {
-
-  controls.update()
-
+if (bagModel) {
+  bagModel.rotation.y =
+    Math.sin(idleTime) *
+    (Math.PI * 0.25)
 }
 
 if (bagModel) {
 
-  const topViewProgress =
-  THREE.MathUtils.clamp(
-    (p - 0.35) / 0.35,
+  camera.position.set(
     0,
-    1
-  )
-  const zoomProgress =
-  THREE.MathUtils.clamp(
-    (p - 0.70) / 0.15,
-    0,
-    1
-  )
-
-  camera.position.x = 0
-
-  camera.position.y =
-
-  THREE.MathUtils.lerp(
     -0.8,
-    8,
-    topViewProgress
+    4
   )
 
-  +
-
-  THREE.MathUtils.lerp(
+  camera.lookAt(
     0,
-    4,
-    zoomProgress
+    -1.5,
+    0
   )
-
-camera.position.z =
-
-  THREE.MathUtils.lerp(
-    4,
-    0.02,
-    topViewProgress
-  )
-
-  +
-
-  THREE.MathUtils.lerp(
-    0,
-    -0.5,
-    zoomProgress
-  )
-
- camera.lookAt(
-  0,
-  -1.5,
-  0
-)
-
-  bagModel.rotation.x =
-    THREE.MathUtils.lerp(
-      0,
-      0.6,
-      topViewProgress
-    )
-
-  bagModel.scale.setScalar(
-
-  THREE.MathUtils.lerp(
-    4.5,
-    13,
-    topViewProgress
-  )
-
-)
 
 }
 
-if (zipper) {
 
-  const unzipProgress =
-  THREE.MathUtils.clamp(
-    (p - 0.85) / 0.15,
-    0,
-    1
-  )
-
-  zipper.position.x =
-  THREE.MathUtils.lerp(
-    0,
-    -0.4,
-    unzipProgress
-  )
-
-}
 
   // LEISURE
 
@@ -969,19 +935,9 @@ if (zipper) {
     camera.position.x +=
       0.0005
 
-    leisureTimer += 1
-
-    if (
-      leisureCharm &&
-      leisureTimer < 80
-    ) {
-
-      leisureCharm.position.x =
-        leisureStartX +
-        Math.sin(
-          leisureTimer * 0.08
-        ) *
-        0.001
+    if (leisureCharm) {
+      const elapsed = (performance.now() - leisureClickedAt) / 1000
+      leisureSway.value = Math.sin(elapsed * 10) * Math.exp(-elapsed * 1.5) * 0.01
     }
   }
 
@@ -1010,20 +966,6 @@ if (zipper) {
 
     camera.position.x +=
       0.0005
-
-    archiveTimer += 1
-
-    if (
-      lockShackle &&
-      archiveTimer < 35
-    ) {
-
-      lockShackle.position.y +=
-        0.00008
-
-      lockShackle.rotation.z +=
-        0.0008
-    }
   }
 
   // COMH
@@ -1032,14 +974,18 @@ if (zipper) {
     comhClicked
   ) {
 
+    const elapsed = (performance.now() - comhClickedAt) / 2200
+    const progress = Math.min(1, elapsed)
+    const easeProgress = progress < 0.7 ? progress / 0.7 : 1
+
     camera.position.z -=
-      0.006
+      0.15 * easeProgress
 
     camera.position.x -=
-      0.002
+      0.04 * easeProgress
 
     camera.position.y +=
-      0.001
+      0.02 * easeProgress
   }
 
   // SUBZERO
@@ -1068,8 +1014,6 @@ if (zipper) {
   // SUNGLASSES
   if (sunglassesClicked) {
 
-  lensPulse += 1
-
   camera.position.z -= 0.012
 
   camera.position.y -= 0.001
@@ -1087,6 +1031,7 @@ if (zipper) {
       (targetRotation - triskeleCharm.rotation.z) * 0.08
 
   }
+
   renderer.render(
     scene,
     camera

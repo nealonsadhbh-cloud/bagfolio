@@ -6,7 +6,50 @@
 <title>Archive</title>
 
 <style>
-    
+    /* COVERFLOW */
+    .archive-lens{
+    width:min(60vw,380px);
+    margin:0 auto 40px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    position:relative;
+}
+
+.archive-lens img,
+.archive-lens canvas{
+    width:80%;
+    display:block;
+}
+
+.archive-lens canvas{
+    display:none;
+}
+
+.archive-lens.is-animated img{
+    position:absolute;
+    width:1px;
+    height:1px;
+    overflow:hidden;
+    clip-path:inset(50%);
+}
+
+.archive-lens.is-animated canvas{
+    display:block;
+}
+
+@media (prefers-reduced-motion:no-preference){
+    .archive-lens.is-animated canvas{
+        animation:archiveHandheld 3s steps(8) infinite;
+    }
+}
+
+@keyframes archiveHandheld{
+    0%,100%{ transform:translate(0,0) rotate(0); }
+    25%{ transform:translate(1px,-1px) rotate(.3deg); }
+    50%{ transform:translate(-1px,1px) rotate(-.3deg); }
+    75%{ transform:translate(1px,1px) rotate(.2deg); }
+}
 
 *{
     margin:0;
@@ -149,8 +192,7 @@ body{
 .container{
     width:min(1400px,92vw);
     margin:auto;
-
-    padding-top:140px;
+    padding-top:160px;
     padding-bottom:300px;
 }
 
@@ -159,11 +201,12 @@ body{
     font-weight:300;
     text-align:center;
     margin-bottom:25px;
+    color:#999;
 }
 
 .description{
-    width:700px;
-    max-width:100%;
+    width:90%;
+    max-width:700px;
     margin:0 auto 80px;
     text-align:center;
     line-height:1.8;
@@ -203,16 +246,21 @@ body{
         opacity .55s ease;
 }
 
-.cover-card.active{
-    z-index:100;
-    card.style.filter =
-"drop-shadow(0 25px 40px rgba(0,0,0,.18))";
-}
 .cover-card{
     width:260px;
     height:220px;
-    card.style.filter =
-"drop-shadow(0 8px 20px rgba(0,0,0,.08))";
+    filter:
+        drop-shadow(
+            0 8px 20px rgba(0,0,0,.08)
+        );
+}
+
+.cover-card.active{
+    z-index:100;
+    filter:
+        drop-shadow(
+            0 25px 40px rgba(0,0,0,.18)
+        );
 }
 
 /* ARROWS */
@@ -291,6 +339,49 @@ body{
 }
 
 }
+.motion-showcase{
+    width:100%;
+
+    margin-top:-80px;
+
+    position:relative;
+    z-index:1;
+}
+
+.motion-video{
+    width:100%;
+    display:block;
+
+    border-radius:18px;
+
+    box-shadow:
+        0 25px 60px rgba(0,0,0,.12);
+}.motion-showcase{
+    margin-top:120px;
+    display:flex;
+    justify-content:center;
+}
+
+.motion-video{
+    width:min(900px,85vw);
+
+    display:block;
+
+    border-radius:18px;
+
+    box-shadow:
+        0 25px 60px rgba(0,0,0,.12);
+}
+
+/* FOOTER */
+
+.footer{
+  text-align:center;
+  padding:120px 40px;
+  opacity:.4;
+  font-size:.9rem;
+  color:#333 !important;
+}
 
 </style>
 </head>
@@ -299,30 +390,30 @@ body{
 
 <nav class="project-nav">
 
-    <span class="nav-bubble"></span>
+  <span class="nav-bubble"></span>
 
-    <a href="/index.html">Home</a>
-    <a href="/ARGlasses.html">USK</a>
-    <a href="/SubZero.html">SubZero</a>
-    <a href="/EMRLD.html">EMRLD</a>
-    <a href="/Trivet.html">Trivet</a>
-    <a href="/Archive.html" class="active">Archive</a>
-    <a href="/Leisure.html">Leisure</a>
-    <a href="/Comh.html">Comh</a>
+  <a href="/index.html">Home</a>
+  <a href="/Comh.html">Exhibition</a>
+  <a href="/ARGlasses.html">Product</a>
+  <a href="/Commercial.html">Commercial</a>
+  <a href="/Archive.html"class="active">Archive</a>
+  <a href="/Art.html">Art</a>
 
 </nav>
 
+
 <div class="container">
 
-    <h1 class="archive-title">
-        ARCHIVE
-    </h1>
+    <div class="archive-lens">
+    <img src="./archive-lens.png" alt="Archive">
+    <canvas aria-hidden="true"></canvas>
+</div>
 
-    <p class="description">
-        A collection of experimental projects exploring
-        logo design, motion graphics, creative coding
-        and interactive digital experiences.
-    </p>
+<p class="description">
+    A collection of experimental projects exploring
+    logo design, motion graphics, creative coding
+    and interactive digital experiences.
+</p>
 
     <div class="coverflow-wrapper">
 
@@ -340,15 +431,115 @@ body{
 
     <div class="project-info">
 
-        <h2 id="projectTitle"></h2>
+    <h2 id="projectTitle"></h2>
 
-        <p id="projectDescription"></p>
-
-    </div>
+    <p id="projectDescription"></p>
 
 </div>
 
+<section class="motion-showcase">
+
+    <video
+        class="motion-video"
+        autoplay
+        muted
+        loop
+        playsinline
+    >
+        <source
+    src="/motion-graphics.mp4"
+    type="video/mp4"
+>
+    </video>
+
+</section>
+
+</div>
+
+<div class="footer">
+  Website made using: Blender . ThreeJs . Vite
+</div>
+
 <script>
+
+const archiveLens = document.querySelector(".archive-lens");
+const archiveImage = archiveLens.querySelector("img");
+const archiveCanvas = archiveLens.querySelector("canvas");
+const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+function setupArchiveLens(){
+    const context = archiveCanvas.getContext("2d");
+    if(!context){
+        console.error("Could not initialise the archive lens animation.");
+        return;
+    }
+
+    archiveCanvas.width = Math.min(archiveImage.naturalWidth, 800);
+    archiveCanvas.height = Math.round(
+        archiveImage.naturalHeight * archiveCanvas.width / archiveImage.naturalWidth
+    );
+
+    let frame;
+    let visible = false;
+    let lastDraw = 0;
+    const slices = 120;
+    const width = archiveCanvas.width;
+    const height = archiveCanvas.height;
+
+    function draw(time){
+        frame = requestAnimationFrame(draw);
+        if(time - lastDraw < 33) return;
+        lastDraw = time;
+
+        const strength = .07 + .05 * Math.sin(time / 1600);
+        const lensX = .5 + .1 * Math.sin(time / 2400);
+        const mapX = x => {
+            const distance = x - lensX;
+            return x + strength * distance * Math.sin(Math.PI * x);
+        };
+
+        context.clearRect(0, 0, width, height);
+        for(let i = 0; i < slices; i++){
+            const start = i / slices;
+            const end = (i + 1) / slices;
+            const distance = ((start + end) / 2 - lensX) / .6;
+            const bulge = 1 + strength * Math.max(0, 1 - distance * distance);
+            const x = mapX(start) * width;
+            const sliceWidth = (mapX(end) - mapX(start)) * width;
+
+            context.drawImage(
+                archiveImage,
+                start * archiveImage.naturalWidth, 0,
+                archiveImage.naturalWidth / slices, archiveImage.naturalHeight,
+                x, (height - height * bulge) / 2,
+                sliceWidth + .5, height * bulge
+            );
+        }
+        archiveLens.classList.add("is-animated");
+    }
+
+    function updateAnimation(){
+        cancelAnimationFrame(frame);
+        if(visible && !reducedMotion.matches){
+            frame = requestAnimationFrame(draw);
+        }else{
+            archiveLens.classList.remove("is-animated");
+        }
+    }
+
+    const observer = new IntersectionObserver(entries => {
+        visible = entries[0].isIntersecting;
+        updateAnimation();
+    });
+    observer.observe(archiveLens);
+    reducedMotion.addEventListener("change", updateAnimation);
+}
+
+if(archiveImage.complete && archiveImage.naturalWidth){
+    setupArchiveLens();
+}else{
+    archiveImage.addEventListener("load", setupArchiveLens, {once:true});
+}
 
 const projects = [
 

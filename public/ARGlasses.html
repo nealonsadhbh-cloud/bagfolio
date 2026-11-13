@@ -132,12 +132,11 @@ body{
 /* HERO */
 
 .hero{
-  min-height:50vh;
   display:flex;
   justify-content:center;
   align-items:center;
   text-align:center;
-  padding:60px 20px 30px;
+  padding:100px 20px 0;
 }
 
 .hero-content{
@@ -168,7 +167,7 @@ body{
   gap:60px;
   align-items:center;
 
-  padding:40px 6%;
+  padding:65px 6% 40px;
 }
 
 .product img{
@@ -262,7 +261,7 @@ body{
   .product{
     grid-template-columns:1fr;
     gap:30px;
-    padding:30px 8%;
+    padding:55px 8% 30px;
   }
 
   .product h2{
@@ -277,6 +276,141 @@ body{
     grid-template-columns:1fr;
   }
 
+}
+.project-divider{
+  max-width:1200px;
+  margin:140px auto 90px;
+  text-align:center;
+}
+
+.project-divider h2{
+  font-size:2rem;
+  font-weight:400;
+  opacity:.25;
+}
+
+.emrld-section{
+  max-width:1200px;
+  margin:auto;
+  padding:0 6% 120px;
+}
+
+.emrld-logo{
+  display:flex;
+  justify-content:center;
+  margin-bottom:50px;
+}
+
+.emrld-logo img{
+  width:min(600px,90vw);
+  animation:bulge 5s ease-in-out infinite;
+}
+
+.emrld-description{
+  max-width:650px;
+  margin:0 auto 80px;
+  text-align:center;
+  line-height:1.9;
+}
+
+.emrld-image{
+  width:min(650px,100%);
+  display:block;
+  margin:0 auto 80px;
+  border-radius:8px;
+  box-shadow:0 20px 40px rgba(0,0,0,.15);
+}
+
+@keyframes bulge{
+
+  0%{
+    transform:scale(1);
+  }
+
+  25%{
+    transform:
+      scaleX(1.03)
+      scaleY(.97);
+  }
+
+  50%{
+    transform:
+      scaleX(.98)
+      scaleY(1.04);
+  }
+
+  75%{
+    transform:
+      scaleX(1.02)
+      scaleY(.98);
+  }
+
+  100%{
+    transform:scale(1);
+  }
+
+}
+
+/* TRIVET SECTION */
+
+.trivet-section{
+  max-width:1200px;
+  margin:auto;
+  padding:0 6% 120px;
+}
+
+.trivet-logo{
+  display:flex;
+  justify-content:center;
+  margin-bottom:50px;
+}
+
+.trivet-logo img{
+  width:min(300px,70vw);
+  animation:bulge 5s ease-in-out infinite;
+}
+
+.trivet-description{
+  max-width:650px;
+  margin:0 auto 80px;
+  text-align:center;
+  line-height:1.9;
+}
+
+.trivet-image{
+  width:min(650px,100%);
+  display:block;
+  margin:0 auto 80px;
+  border-radius:8px;
+  box-shadow:0 20px 40px rgba(0,0,0,.15);
+}
+
+.trivet-info{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:40px;
+  max-width:900px;
+  margin:60px auto;
+  padding:0 6%;
+  text-align:center;
+}
+
+.trivet-info h3{
+  font-size:1rem;
+  font-weight:400;
+  margin-bottom:10px;
+  opacity:.7;
+}
+
+.trivet-info p{
+  line-height:1.6;
+}
+
+@media(max-width:900px){
+  .trivet-info{
+    grid-template-columns:1fr;
+    gap:30px;
+  }
 }
 
 </style>
@@ -370,16 +504,14 @@ window.addEventListener("load", () => {
 <body>
   <nav class="project-nav">
 
-    <span class="nav-bubble"></span>
+  <span class="nav-bubble"></span>
 
-    <a href="/index.html">Home</a>
-    <a href="/ARGlasses.html" class="active">USK</a>
-    <a href="/SubZero.html">SubZero</a>
-    <a href="/EMRLD.html">EMRLD</a>
-    <a href="/Trivet.html">Trivet</a>
-    <a href="/Archive.html">Archive</a>
-    <a href="/Leisure.html">Leisure</a>
-    <a href="/Comh.html">Comh</a>
+  <a href="/index.html">Home</a>
+  <a href="/Comh.html">Exhibition</a>
+  <a href="/ARGlasses.html" class="active">Product</a>
+  <a href="/Commercial.html">Commercial</a>
+  <a href="/Archive.html">Archive</a>
+  <a href="/Art.html">Art</a>
 
 </nav>
 
@@ -410,23 +542,25 @@ window.addEventListener("load", () => {
 
   <div>
 
-    <h2>Navigate Without Looking Down.</h2>
+  <h2>Navigate Without Looking Down.</h2>
 
-    <p>
-      USK integrates augmented reality navigation
-      directly into the wearer's field of view,
-      providing route guidance and environmental
-      awareness in snow-covered terrain. Designed
-      for outdoor exploration, the system allows
-      users to remain focused on their surroundings
-      while receiving real-time navigational support.
-    </p>
+  <p>
+    USK integrates augmented reality navigation
+    directly into the wearer's field of view,
+    providing route guidance and environmental
+    awareness in snow-covered terrain. Designed
+    for outdoor exploration, the system allows
+    users to remain focused on their surroundings
+    while receiving real-time navigational support.
+  </p>
 
-  </div>
+  
+</div>
 
 </section>
 
 <section class="features">
+  
 
   <h2>Key Features</h2>
 
@@ -442,5 +576,108 @@ window.addEventListener("load", () => {
       <p>Follow routes without relying on handheld devices.</p>
     </div>
 
-    <div class="card">
+</div>
+
+<section class="emrld-section" id="emrld">
+
+  <div class="emrld-logo">
+
+    <img
+      src="/EMRLD-logo.png"
+      alt="EMRLD Logo"
+    >
+
+  </div>
+
+  <p class="emrld-description">
+
+    EMRLD is a dual-chamber composting system designed
+    to encourage sustainable waste management through
+    simple, intuitive interaction.
+
+    <br><br>
+
+    The project explores product design, sustainability,
+    CAD development and visual branding through the
+    creation of a domestic composter that supports
+    continuous composting cycles while maintaining a
+    clean and approachable form.
+
+  </p>
+
+  <img
+    src="/EMRLD-hero.png"
+    alt="EMRLD Render"
+    class="emrld-image"
+  >
+
+  <h2 style="text-align:center; margin-bottom:50px;">
+    Engineering Documentation
+  </h2>
+
+  <img
+    src="/EMRLD-drawings.png"
+    alt="EMRLD Engineering Drawings"
+    class="emrld-image"
+  >
+
+  <h2 style="text-align:center; margin-bottom:50px;">
+    Product Development
+  </h2>
+
+  <img
+    src="/EMRLD-detail.png"
+    alt="EMRLD Detail"
+    class="emrld-image"
+  >
+
+</section>
+
+<section class="trivet-section" style="margin-top: 0px;" id="trivet">
+
+  <div class="trivet-logo">
+
+    <img
+      src="/trivet-logo.png"
+      alt="Trivet Logo"
+    >
+
+  </div>
+
+  <div style="display: flex; justify-content: center; gap: 40px; margin-bottom: 50px; flex-wrap: wrap;">
+    <img
+      src="/trivet-detail.png"
+      alt="Trivet Detail"
+      style="max-width: 450px; height: auto;"
+    >
+    <img
+      src="/trivet-packaging.png"
+      alt="Trivet Packaging"
+      style="max-width: 320px; height: auto;"
+    >
+  </div>
+
+  <div style="max-width: 520px; margin: 0 auto;">
+    <p class="trivet-description" style="text-align: left; margin-bottom: 15px;">
+
+      A decorative coaster inspired by the
+      triskele symbol, combining functional
+      surface protection with a contemporary
+      interpretation of Celtic visual language.
+
+    </p>
+
+    <img
+      src="/trivet-hero.png"
+      alt="Trivet Render"
+      class="trivet-image"
+      style="width: 100%; max-width: 380px; display: block; border-radius: 12px; margin-top: 60px;"
+    >
+  </div>
+
+</section>
+
+<footer style="text-align: center; padding: 60px 20px; color: #888; font-size: 14px;">
+  Website made using: Blender . ThreeJS . Vite
+</footer>
      

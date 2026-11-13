@@ -138,18 +138,16 @@
     }
 
     .hero-logo img {
+      display: block;
       width: 420px;
       max-width: 90vw;
-
-      box-shadow:
-        0 20px 40px rgba(0,0,0,0.12);
     }
 
     .description {
-      max-width: 850px;
+      width: min(420px, 90vw);
       margin: 0 auto;
 
-      text-align: center;
+      text-align: left;
 
       font-size: 1.05rem;
       line-height: 1.9;
@@ -214,6 +212,257 @@
       height: 100px;
     }
 
+    .walkthrough {
+      position: relative;
+      width: min(1440px, 94vw);
+      height: min(76vh, 840px);
+      min-height: 560px;
+      margin: 112px auto 90px;
+      overflow: hidden;
+      background: #e4e0d8;
+      color: #24231f;
+      isolation: isolate;
+    }
+
+    #walkthrough-canvas {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+    }
+
+    #walkthrough-canvas canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+      touch-action: none;
+      outline: none;
+    }
+
+    .walkthrough-arrow-target {
+      position: absolute;
+      z-index: 3;
+      width: 124px;
+      height: 124px;
+      padding: 0;
+      border: 0;
+      border-radius: 50%;
+      background: transparent;
+      transform: translate(-50%, -50%);
+      cursor: pointer;
+      touch-action: none;
+    }
+
+    .walkthrough-arrow-target[hidden] {
+      display: none;
+    }
+
+    .walkthrough-arrow-target--outside::before {
+      content: "";
+      position: absolute;
+      inset: 20px;
+      border: 1px solid rgba(255, 255, 255, .56);
+      border-radius: 50%;
+      background: rgba(248, 248, 245, .4);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, .12);
+      transform: perspective(360px) rotateX(56deg);
+      pointer-events: none;
+    }
+
+    .walkthrough-arrow-mark {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 54px;
+      height: 60px;
+      transform: translate(-50%, -50%);
+      background: rgba(112, 116, 117, .72);
+      clip-path: polygon(0 42%, 50% 0, 100% 42%, 100% 70%, 50% 30%, 0 70%);
+      filter: drop-shadow(0 1px 2px rgba(0, 0, 0, .18));
+      pointer-events: none;
+    }
+
+    .walkthrough-transition {
+      position: absolute;
+      z-index: 4;
+      inset: 0;
+      background: #10100f;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .32s ease;
+    }
+
+    .walkthrough-transition.is-active {
+      opacity: 1;
+    }
+
+    .artwork-dialog {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      max-width: none;
+      max-height: none;
+      margin: 0;
+      padding: 0;
+      border: 0;
+      overflow: hidden;
+      background: #f0eee8;
+      color: #24231f;
+    }
+
+    .artwork-dialog::backdrop {
+      background: rgba(15, 17, 18, .78);
+      backdrop-filter: blur(5px);
+    }
+
+    .artwork-dialog[open] {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(320px, 34vw);
+      height: 100dvh;
+    }
+
+    .artwork-dialog-image {
+      display: grid;
+      place-items: center;
+      min-width: 0;
+      min-height: 0;
+      padding: 5vh 4vw;
+      background: #181817;
+    }
+
+    .artwork-dialog-image img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+    }
+
+    .artwork-dialog-copy {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 48px clamp(28px, 4vw, 64px);
+    }
+
+    .artwork-dialog-copy .walkthrough-kicker {
+      color: #777;
+    }
+
+    .artwork-dialog-copy h3 {
+      margin-top: 16px;
+      font: 400 2rem/1.1 Georgia, serif;
+    }
+
+    .artwork-dialog-meta {
+      margin-top: 12px;
+      color: #777;
+      font-size: .78rem;
+      line-height: 1.6;
+      white-space: pre-line;
+    }
+
+    .artwork-dialog-copy p:last-child {
+      margin-top: 16px;
+      color: #555;
+      font-size: .95rem;
+      line-height: 1.7;
+    }
+
+    .artwork-dialog-close {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      z-index: 1;
+      min-width: 44px;
+      min-height: 44px;
+      border: 0;
+      background: rgba(240, 238, 232, .88);
+      color: #24231f;
+      font: inherit;
+      cursor: pointer;
+    }
+
+    .walkthrough-topline,
+    .walkthrough-footer {
+      position: absolute;
+      z-index: 2;
+      left: 28px;
+      right: 28px;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 20px;
+      color: #fff;
+      font-size: .72rem;
+      letter-spacing: .08em;
+      text-shadow: 0 1px 12px rgba(0, 0, 0, .6);
+      pointer-events: none;
+    }
+
+    .walkthrough-topline {
+      top: 24px;
+    }
+
+    .walkthrough-footer {
+      bottom: 24px;
+      letter-spacing: .02em;
+    }
+
+    .walkthrough-intro {
+      position: absolute;
+      z-index: 3;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 32px;
+      text-align: center;
+      color: #fff;
+      background: rgba(25, 26, 23, .42);
+    }
+
+    .walkthrough-intro[hidden] {
+      display: none;
+    }
+
+    .walkthrough-intro p {
+      max-width: 430px;
+      margin-top: 12px;
+      line-height: 1.65;
+      color: rgba(255, 255, 255, .82);
+    }
+
+    .walkthrough-kicker {
+      font-size: .72rem;
+      letter-spacing: .16em;
+    }
+
+    .walkthrough-intro h2 {
+      margin-top: 0;
+      font-family: Georgia, serif;
+      font-size: clamp(2.4rem, 5vw, 4.5rem);
+      font-weight: 400;
+    }
+
+    #walkthrough-enter {
+      margin-top: 28px;
+      padding: 15px 22px;
+      border: 0;
+      border-radius: 2px;
+      background: #f3f0ea;
+      color: #222;
+      font: inherit;
+      cursor: pointer;
+    }
+
+    #walkthrough-enter:disabled {
+      cursor: wait;
+      opacity: .7;
+    }
+
     @media (max-width: 900px) {
 
       .container {
@@ -237,6 +486,41 @@
 
       .project-image img {
         width: 100%;
+      }
+
+      .walkthrough {
+        width: 100%;
+        height: 76svh;
+        min-height: 480px;
+        margin: 104px auto 70px;
+      }
+
+      .walkthrough-topline,
+      .walkthrough-footer {
+        left: 16px;
+        right: 16px;
+        font-size: .65rem;
+      }
+
+      .walkthrough-topline { top: 16px; }
+      .walkthrough-footer { bottom: 16px; }
+
+      .artwork-dialog[open] {
+        grid-template-columns: 1fr;
+        grid-template-rows: minmax(0, 1fr) auto;
+      }
+
+      .artwork-dialog-image {
+        min-height: 0;
+        padding: 48px 18px 12px;
+      }
+
+      .artwork-dialog-image img {
+        max-height: 100%;
+      }
+
+      .artwork-dialog-copy {
+        padding: 20px 24px 28px;
       }
 
     }
@@ -332,20 +616,43 @@ window.addEventListener("load", () => {
 </script>
   <nav class="project-nav">
 
-    <span class="nav-bubble"></span>
+  <span class="nav-bubble"></span>
 
-    <a href="/index.html">Home</a>
-    <a href="/ARGlasses.html">USK</a>
-    <a href="/SubZero.html">SubZero</a>
-    <a href="/EMRLD.html">EMRLD</a>
-    <a href="/Trivet.html">Trivet</a>
-    <a href="/Archive.html">Archive</a>
-    <a href="/Leisure.html">Leisure</a>
-    <a href="/Comh.html"class="active">Comh</a>
+  <a href="/index.html">Home</a>
+  <a href="/Comh.html"class="active">Exhibition</a>
+  <a href="/ARGlasses.html">Product</a>
+  <a href="/Commercial.html">Commercial</a>
+  <a href="/Archive.html">Archive</a>
+  <a href="/Art.html">Art</a>
 
 </nav>
 
- 
+  <section class="walkthrough" aria-label="Interactive Comh exhibition walkthrough">
+    <div id="walkthrough-canvas"></div>
+    <div class="walkthrough-topline">
+      <span id="walkthrough-status" role="status" aria-live="polite">Loading exhibition</span>
+    </div>
+    <div class="walkthrough-intro" id="walkthrough-intro">
+      <h2>Step inside Comh</h2>
+      <p>Click the floor arrows to move between viewpoints. Drag to look around.</p>
+      <button id="walkthrough-enter" type="button" disabled>Loading exhibition...</button>
+    </div>
+    <div class="walkthrough-footer">
+      <span>COMH, 2026</span>
+    </div>
+    <dialog class="artwork-dialog" id="artwork-dialog" aria-labelledby="artwork-dialog-title" aria-describedby="artwork-dialog-description">
+      <button class="artwork-dialog-close" id="artwork-dialog-close" type="button" aria-label="Close artwork details">Close</button>
+      <div class="artwork-dialog-image">
+        <img id="artwork-dialog-image" alt="">
+      </div>
+      <div class="artwork-dialog-copy">
+        <span class="walkthrough-kicker">COMH / SELECTED WORK</span>
+        <h3 id="artwork-dialog-title"></h3>
+        <p class="artwork-dialog-meta" id="artwork-dialog-meta"></p>
+        <p id="artwork-dialog-description"></p>
+      </div>
+    </dialog>
+  </section>
 
   <div class="container">
 
@@ -461,6 +768,11 @@ records.forEach(record => {
 })
 
 </script>
+  <script type="module" src="/src/exhibition.js"></script>
+
+  <footer style="text-align: center; padding: 40px 20px; color: #999; font-size: 0.85rem; background: #f3f0ea; margin-top: 80px;">
+    Website made using: Blender . ThreeJS . Vite
+  </footer>
 
 </body>
 

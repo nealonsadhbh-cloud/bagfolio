@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Commercial Practice</title>
+
+<style>
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+body{
+  background:#ffffff;
+  color:#222;
+  font-family:Arial,sans-serif;
+  overflow-x:hidden;
+}
+
+/* NAV */
+
+.project-nav{
+    position:fixed;
+    top:30px;
+    left:30px;
+    z-index:1000;
+
+    display:flex;
+    align-items:center;
+    gap:4px;
+
+    height:55px;
+    padding:8px;
+
+    background:rgba(0,0,0,.14);
+
+    border-radius:999px;
+    overflow:hidden;
+
+    backdrop-filter:blur(10px);
+}
+
+.project-nav a{
+    position:relative;
+    z-index:2;
+
+    text-decoration:none;
+    color:#111;
+
+    font-size:.8rem;
+    line-height:1;
+
+    padding:12px 18px;
+
+    border-radius:999px;
+
+    transition:color .3s ease;
+}
+
+.project-nav a.active{
+  background:none;
+}
+
+.project-nav a:hover{
+    color:#000;
+}
+
+.nav-bubble{
+    position:absolute;
+    top:4px;
+    left:0;
+    z-index:1;
+
+    height:calc(100% - 8px);
+
+    background:rgba(255,255,255,.45);
+
+    backdrop-filter:
+        blur(24px)
+        saturate(180%);
+
+    -webkit-backdrop-filter:
+        blur(24px)
+        saturate(180%);
+
+    border-radius:999px;
+
+    border:1px solid rgba(255,255,255,.65);
+
+    box-shadow:
+        0 2px 6px rgba(0,0,0,.08),
+        0 10px 20px rgba(255,255,255,.15),
+        inset 0 1px 1px rgba(255,255,255,.95);
+
+    opacity:1;
+    filter:blur(0px);
+
+    transition:
+        left .55s cubic-bezier(.34,1.56,.64,1),
+        width .55s cubic-bezier(.34,1.56,.64,1),
+        transform .25s ease,
+        opacity .3s ease,
+        filter .3s ease;
+}
+
+.nav-bubble::before{
+    content:"";
+
+    position:absolute;
+
+    top:2px;
+    left:8px;
+
+    width:70%;
+    height:45%;
+
+    border-radius:999px;
+
+    background:
+    linear-gradient(
+        to bottom,
+        rgba(255,255,255,.75),
+        rgba(255,255,255,0)
+    );
+
+    pointer-events:none;
+}
+
+/* HERO */
+
+.hero{
+  min-height:40vh;
+
+  display:flex;
+  justify-content:center;
+  align-items:center;
+
+  padding:120px 40px 60px;
+}
+
+.hero-logo{
+  width:220px;
+  display:block;
+}
+
+.hero--subzero{
+  min-height:0;
+  padding:0 40px 60px;
+}
+
+.subzero-logo{
+  width:240px;
+  display:block;
+}
+
+/* CONTENT */
+
+.project-info{
+  max-width:1200px;
+  margin:auto;
+
+  padding:0 8vw 70px;
+
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:50px;
+}
+
+.project-info h3{
+  font-size:.8rem;
+  text-transform:uppercase;
+  letter-spacing:.15em;
+  opacity:.5;
+  margin-bottom:12px;
+}
+
+.project-info p{
+  line-height:1.7;
+}
+
+.gallery-section{
+  max-width:1200px;
+  margin:auto;
+
+  padding:0 8vw 120px;
+}
+
+.gallery{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:30px;
+}
+
+.gallery img{
+  width:100%;
+  display:block;
+  border-radius:10px;
+  object-fit:cover;
+}
+
+.documentation-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  align-items:start;
+  gap:30px;
+}
+
+.documentation-grid img{
+  width:100%;
+  display:block;
+  border-radius:10px;
+}
+
+.document-folder{
+  padding-top:8px;
+}
+
+.document-folder summary{
+  position:relative;
+  aspect-ratio:1.18;
+  display:flex;
+  align-items:flex-end;
+  padding:40px 24px 24px;
+  color:#765b3e;
+  cursor:pointer;
+  list-style:none;
+  isolation:isolate;
+}
+
+.document-folder summary::-webkit-details-marker{
+  display:none;
+}
+
+.document-folder summary::before{
+  content:"";
+  position:absolute;
+  inset:8% 0 0;
+  border:1px solid #c6a67d;
+  border-radius:9px 10px 6px 6px;
+  background:#c9ab85 url("/folder-bag-texture.jpg") center / cover;
+  box-shadow:0 10px 18px rgba(76,52,30,.15);
+  z-index:-2;
+}
+
+.folder-papers{
+  position:absolute;
+  z-index:-1;
+  top:5%;
+  right:0;
+  width:44%;
+  height:12%;
+  border:1px solid #c6a67d;
+  border-bottom:0;
+  border-radius:24px 18px 0 0;
+  background:#c9ab85 url("/folder-bag-texture.jpg") center / cover;
+}
+
+.folder-cover{
+  position:absolute;
+  z-index:-1;
+  inset:17% 0 0;
+  border:1px solid #c8a980;
+  border-radius:6px 12px 6px 6px;
+  background:
+    linear-gradient(to bottom,transparent 93%,rgba(165,127,83,.1) 93.3%,transparent 94%),
+    url("/folder-bag-texture.jpg") center / cover,
+    #c9ab85;
+  box-shadow:inset 0 2px 2px rgba(255,245,222,.35), inset -2px 0 4px rgba(124,86,47,.1);
+}
+
+.folder-cover::before{
+  content:"";
+  position:absolute;
+  left:-1px;
+  bottom:100%;
+  width:60%;
+  height:16px;
+  background:#c9ab85 url("/folder-bag-texture.jpg") center / cover;
+  border-top:1px solid #c8a980;
+  border-left:1px solid #c8a980;
+  border-radius:7px 16px 0 0;
+  clip-path:polygon(0 0,92% 0,100% 100%,0 100%);
+}
+
+.folder-copy{
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  gap:4px;
+  padding:12px 16px;
+  color:#564634;
+  background:#f4ead5;
+  border:1px solid #d5c4a8;
+  box-shadow:1px 2px 3px rgba(76,52,30,.16);
+}
+
+.document-folder summary:focus-visible{
+  outline:3px solid #1689a8;
+  outline-offset:4px;
+}
+
+.folder-label{
+  display:none;
+}
+
+.folder-title{
+  font-family:Georgia,serif;
+  font-size:1rem;
+  font-weight:400;
+}
+
+.folder-action{
+  font-size:.8rem;
+  text-decoration:underline;
+  text-underline-offset:3px;
+}
+
+.folder-close,
+.document-folder[open] .folder-open{
+  display:none;
+}
+
+.document-folder[open] .folder-close{
+  display:inline;
+}
+
+.document-folder[open] summary{
+  aspect-ratio:auto;
+  padding:20px 24px;
+  border:1px solid #b69e73;
+  border-radius:8px 8px 0 0;
+  background:#c9ab85 url("/folder-bag-texture.jpg") center / cover;
+}
+
+.document-folder[open] summary::before,
+.document-folder[open] .folder-papers,
+.document-folder[open] .folder-cover{
+  display:none;
+}
+
+.document-folder[open] .folder-copy{
+  gap:6px;
+}
+
+.pdf-viewer iframe{
+  width:100%;
+  height:600px;
+  display:block;
+  border:0;
+  border-radius:10px;
+}
+
+.section{
+  max-width:1200px;
+  margin:auto;
+  padding:0 8vw 120px;
+}
+
+.section h2{
+  font-size:2rem;
+  font-weight:400;
+  margin-bottom:25px;
+}
+
+.section p{
+  max-width:800px;
+  line-height:1.9;
+}
+
+/* FOOTER */
+
+.footer{
+  text-align:center;
+  padding:120px 40px;
+  opacity:.4;
+  font-size:.9rem;
+}
+
+@media (max-width:900px){
+
+  .project-info{
+    grid-template-columns:1fr;
+  }
+
+  .gallery{
+    grid-template-columns:1fr;
+  }
+
+  .documentation-grid{
+    grid-template-columns:1fr;
+  }
+
+  .hero-logo,
+  .subzero-logo{
+    width:160px;
+  }
+
+}
+
+</style>
+</head>
+
+<body>
+
+<nav class="project-nav">
+
+  <span class="nav-bubble"></span>
+
+  <a href="/index.html">Home</a>
+  <a href="/Comh.html">Exhibition</a>
+  <a href="/ARGlasses.html">Product</a>
+  <a href="/Commercial.html" class="active">Commercial</a>
+  <a href="/Archive.html">Archive</a>
+  <a href="/Art.html">Art</a>
+
+</nav>
+
+<!-- CHOICE -->
+
+<section class="hero">
+
+  <img
+    src="/leisure-icon.png"
+    alt="Leisure Logo"
+    class="hero-logo"
+  >
+
+</section>
+
+<section class="project-info">
+
+  <div>
+    <h3>Project</h3>
+    <p>Leisure Category Branding</p>
+  </div>
+
+  <div>
+    <h3>Client</h3>
+    <p>Choice Stores</p>
+  </div>
+
+  <div>
+    <h3>Focus</h3>
+    <p>Branding, Signage & Environmental Graphics</p>
+  </div>
+
+</section>
+
+<section class="gallery-section">
+
+  <div class="gallery">
+
+    <img src="/leisure-hero.jpg" alt="">
+    <img src="/leisure-facade.jpg" alt="">
+
+  </div>
+
+</section>
+
+<section class="section">
+
+  <h2>Overview</h2>
+
+  <p>
+    The Leisure category identity was developed for Choice Stores
+    to create a distinctive retail experience across multiple
+    customer touchpoints.
+  </p>
+
+</section>
+
+<section class="section">
+
+  <h2>Environmental Graphics</h2>
+
+  <p>
+    A flexible visual system was developed for storefronts,
+    category signage, promotional graphics and wayfinding.
+  </p>
+
+</section>
+
+<!-- SUBZERO -->
+
+<section class="hero hero--subzero">
+
+  <img
+    src="/subzero-logo.png"
+    alt="SubZero Engineering Logo"
+    class="subzero-logo"
+  >
+
+</section>
+
+<section class="project-info">
+
+  <div>
+    <h3>Project</h3>
+    <p>Data Centre Infrastructure Systems</p>
+  </div>
+
+  <div>
+    <h3>Company</h3>
+    <p>SubZero Engineering</p>
+  </div>
+
+  <div>
+    <h3>Focus</h3>
+    <p>CAD Design, Product Development & Technical Documentation</p>
+  </div>
+
+</section>
+
+<section class="gallery-section">
+
+  <div class="gallery">
+
+    <img src="/subzero-render.png" alt="">
+    <img src="/subzero-cage-render.png" alt="">
+
+  </div>
+
+</section>
+
+<section class="section">
+
+  <h2>Overview</h2>
+
+  <p>
+    During my time at SubZero Engineering, I worked on the design,
+    development and communication of engineered systems for
+    mission-critical data centre environments.
+  </p>
+
+</section>
+
+<section class="gallery-section">
+
+  <div class="documentation-grid">
+    <img
+      src="/subzero-spec-sheet.png"
+      alt="Polar Grid performance data and product specifications"
+    >
+    <div class="pdf-viewer">
+      <details class="document-folder">
+        <summary>
+          <span class="folder-papers" aria-hidden="true"></span>
+          <span class="folder-cover" aria-hidden="true"></span>
+          <span class="folder-copy">
+            <span class="folder-label">Project documentation / PDF</span>
+            <span class="folder-title">Cage Wall Design</span>
+            <span class="folder-action">
+              <span class="folder-open">Open folder</span>
+              <span class="folder-close">Close folder</span>
+            </span>
+          </span>
+        </summary>
+        <iframe src="/cage-wall-design.pdf" title="Cage Wall Design PDF"></iframe>
+      </details>
+    </div>
+  </div>
+
+</section>
+
+<section class="section">
+
+  <h2>Engineering & Documentation</h2>
+
+  <p>
+    My role combined technical design and visual communication,
+    producing detailed manufacturing drawings, assembly
+    documentation, product specifications and 3D visualisations.
+  </p>
+
+</section>
+
+<div class="footer">
+  Website made using: Blender . ThreeJs . Vite
+</div>
+
+<script>
+
+function moveBubble(){
+
+    const active =
+    document.querySelector(".project-nav a.active");
+
+    const bubble =
+    document.querySelector(".nav-bubble");
+
+    if(!active || !bubble) return;
+
+    bubble.style.width =
+    (active.offsetWidth + 24) + "px";
+
+    bubble.style.left =
+    (active.offsetLeft - 12) + "px";
+}
+
+window.addEventListener("load", () => {
+
+    const bubble =
+    document.querySelector(".nav-bubble");
+
+    bubble.style.transition = "none";
+
+    moveBubble();
+
+    requestAnimationFrame(() => {
+
+        bubble.style.transition =
+        `left .55s cubic-bezier(.34,1.56,.64,1),
+         width .55s cubic-bezier(.34,1.56,.64,1),
+         transform .25s ease,
+         opacity .3s ease,
+         filter .3s ease`;
+
+    });
+
+    document
+    .querySelectorAll(".project-nav a")
+    .forEach(link => {
+
+        link.addEventListener("click", e => {
+
+            e.preventDefault();
+
+            bubble.style.opacity = "0.75";
+            bubble.style.filter = "blur(3px)";
+            bubble.style.transform = "scale(1.03)";
+
+            const targetWidth =
+            link.offsetWidth + 24;
+
+            bubble.style.width =
+            (targetWidth + 20) + "px";
+
+            bubble.style.left =
+            (link.offsetLeft - 12) + "px";
+
+            setTimeout(() => {
+
+                bubble.style.width =
+                targetWidth + "px";
+
+                bubble.style.opacity = "1";
+                bubble.style.filter = "blur(0px)";
+                bubble.style.transform = "scale(1)";
+
+            }, 300);
+
+            setTimeout(() => {
+
+                window.location.href =
+                link.href;
+
+            }, 650);
+
+        });
+
+    });
+
+});
+
+</script>
+
+</body>
+</html>
