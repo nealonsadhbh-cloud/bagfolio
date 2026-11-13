@@ -410,6 +410,33 @@
       letter-spacing: .02em;
     }
 
+    .walkthrough-artwork-hint {
+      position: absolute;
+      z-index: 2;
+      left: 50%;
+      bottom: 24px;
+      transform: translateX(-50%);
+      padding: 12px 20px;
+      background: rgba(0, 0, 0, 0.6);
+      color: #fff;
+      font-size: .75rem;
+      letter-spacing: .08em;
+      border-radius: 4px;
+      backdrop-filter: blur(8px);
+      text-shadow: 0 1px 8px rgba(0, 0, 0, 0.4);
+      animation: pulse-hint 2s ease-in-out infinite;
+      pointer-events: none;
+    }
+
+    .walkthrough-artwork-hint[hidden] {
+      display: none;
+    }
+
+    @keyframes pulse-hint {
+      0%, 100% { opacity: 0.7; }
+      50% { opacity: 1; }
+    }
+
     .walkthrough-intro {
       position: absolute;
       z-index: 3;
@@ -639,6 +666,9 @@ window.addEventListener("load", () => {
     </div>
     <div class="walkthrough-footer">
       <span>COMH, 2026</span>
+    </div>
+    <div class="walkthrough-artwork-hint" id="walkthrough-artwork-hint" hidden>
+      <span>💡 Click on artworks to learn more</span>
     </div>
     <dialog class="artwork-dialog" id="artwork-dialog" aria-labelledby="artwork-dialog-title" aria-describedby="artwork-dialog-description">
       <button class="artwork-dialog-close" id="artwork-dialog-close" type="button" aria-label="Close artwork details">Close</button>

@@ -14,6 +14,7 @@ const artworkDialogImage = document.querySelector('#artwork-dialog-image')
 const artworkDialogTitle = document.querySelector('#artwork-dialog-title')
 const artworkDialogMeta = document.querySelector('#artwork-dialog-meta')
 const artworkDialogDescription = document.querySelector('#artwork-dialog-description')
+const artworkHint = document.querySelector('#walkthrough-artwork-hint')
 
 if (viewport && walkthrough) {
   const scene = new THREE.Scene()
@@ -295,9 +296,22 @@ if (viewport && walkthrough) {
       -((event.clientY - bounds.top) / bounds.height) * 2 + 1,
     )
     raycaster.setFromCamera(pointer, camera)
-    const artworkHit = routeStage === 'inside'
-      && raycaster.intersectObjects(artworkMeshes, false).length > 0
+    const artworkHits = raycaster.intersectObjects(artworkMeshes, false)
+    const artworkHit = routeStage === 'inside' && artworkHits.length > 0
     renderer.domElement.style.cursor = artworkHit ? 'zoom-in' : 'grab'
+    
+    // Highlight hovered artwork
+    artworkMeshes.forEach((mesh) => {
+      const materials = Array.isArray(mesh.material) ? mesh.material : [mesh.material]
+      materials.forEach((material) => {
+        if (artworkHit && artworkHits[0].object === mesh) {
+          material.emissiveIntensity = 0.4
+          material.emissive?.setHex(0xffffff)
+        } else {
+          material.emissiveIntensity = 0
+        }
+      })
+    })
   })
 
   const endLook = (event) => {
@@ -408,6 +422,7 @@ if (viewport && walkthrough) {
       routeForward.set(-Math.sin(yaw), 0, -Math.cos(yaw)).normalize()
       routeLeft.set(routeForward.z, 0, -routeForward.x).normalize()
       routeStage = 'inside'
+      if (artworkHint) artworkHint.hidden = false
       movementStart.copy(camera.position)
       movementEnd.copy(camera.position)
       movementProgress = 1
@@ -537,6 +552,8 @@ if (viewport && walkthrough) {
             artworkMaterial.polygonOffset = true
             artworkMaterial.polygonOffsetFactor = -2
             artworkMaterial.polygonOffsetUnits = -4
+            artworkMaterial.emissive = new THREE.Color(0xffffff)
+            artworkMaterial.emissiveIntensity = 0
             return artworkMaterial
           }
           object.material = Array.isArray(object.material)
