@@ -239,6 +239,7 @@ if (viewport && walkthrough) {
   let isTransitioning = false
   let routeStage = 'street'
   let streetTurnDistance = 0
+  let justEnteredGallery = false
 
   const resize = () => {
     const { width, height } = viewport.getBoundingClientRect()
@@ -425,6 +426,7 @@ if (viewport && walkthrough) {
       routeForward.set(-Math.sin(yaw), 0, -Math.cos(yaw)).normalize()
       routeLeft.set(routeForward.z, 0, -routeForward.x).normalize()
       routeStage = 'inside'
+      justEnteredGallery = true
       if (artworkHint) artworkHint.hidden = false
       arrowTarget.hidden = true
       leftArrowTarget.hidden = false
@@ -749,7 +751,7 @@ if (viewport && walkthrough) {
       }
       camera.rotation.set(pitch, yaw, 0)
 
-      if (routeStage === 'inside' && galleryRoute) {
+      if (routeStage === 'inside' && galleryRoute && !justEnteredGallery) {
         const entranceThreshold = 0.5
         const atEntrance = galleryRoute.progress < entranceThreshold || galleryRoute.progress > galleryRoute.perimeter - entranceThreshold
         if (atEntrance) {
@@ -757,11 +759,11 @@ if (viewport && walkthrough) {
           if (artworkHint) artworkHint.hidden = true
         }
       }
+      
+      justEnteredGallery = false
 
       if (routeStage === 'inside') {
         arrowTarget.hidden = true
-        leftArrowTarget.hidden = false
-        rightArrowTarget.hidden = false
         if (artworkHint) artworkHint.hidden = false
         const forwardX = -Math.sin(yaw)
         const forwardZ = -Math.cos(yaw)
