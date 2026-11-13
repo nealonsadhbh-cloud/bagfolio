@@ -256,6 +256,7 @@ if (viewport && walkthrough) {
   const setWalking = (walking) => {
     isWalking = walking
     if (overlay) overlay.hidden = walking
+    if (artworkHint) artworkHint.hidden = walking
     arrowTarget.hidden = !walking || routeStage === 'inside'
     leftArrowTarget.hidden = !walking || routeStage !== 'inside'
     rightArrowTarget.hidden = !walking || routeStage !== 'inside'
