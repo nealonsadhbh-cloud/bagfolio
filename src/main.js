@@ -61,7 +61,7 @@ nameTag.innerHTML = `
   </div>
 
   <div class="name-subtitle">
-    Spatial Design • Installation • Visual Storytelling
+    Artist • Exhibition Designer • Spatial Experiences
   </div>
 `
 
